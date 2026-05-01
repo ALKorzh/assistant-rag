@@ -1,0 +1,4 @@
+/data
+/qdrant_data
+/.idea
+.env
