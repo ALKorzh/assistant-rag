@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
@@ -7,29 +6,26 @@ from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from qdrant_client import QdrantClient
 
-
-QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "my_documents")
-EMBEDDING_MODEL = os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
-DEFAULT_SEARCH_LIMIT = 3
-CHUNK_SIZE = 600
-CHUNK_OVERLAP = 100
+from app.core.config import get_settings
 
 
 class RAGService:
     """Document indexing and semantic retrieval over Qdrant."""
 
     def __init__(self) -> None:
-        self.embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL)
-        self.client = QdrantClient(url=QDRANT_URL)
+        settings = get_settings()
+        self._search_limit = settings.rag_search_limit
+
+        self.embeddings = OllamaEmbeddings(model=settings.ollama_embedding_model)
+        self.client = QdrantClient(url=settings.qdrant_url)
         self.vector_store = QdrantVectorStore(
             client=self.client,
-            collection_name=COLLECTION_NAME,
+            collection_name=settings.qdrant_collection,
             embedding=self.embeddings,
         )
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE,
-            chunk_overlap=CHUNK_OVERLAP,
+            chunk_size=settings.chunk_size,
+            chunk_overlap=settings.chunk_overlap,
         )
 
     def process_file(self, file_path: str) -> str:
@@ -49,10 +45,13 @@ class RAGService:
         except Exception as exc:
             return f"Ошибка при обработке файла: {exc}"
 
-    def query(self, question: str, limit: int = DEFAULT_SEARCH_LIMIT) -> str:
+    def query(self, question: str, limit: int | None = None) -> str:
         """Return the most relevant document chunks for a user question."""
         try:
-            docs = self.vector_store.similarity_search(question, k=limit)
+            docs = self.vector_store.similarity_search(
+                question,
+                k=limit or self._search_limit,
+            )
 
             if not docs:
                 return "Информация в локальных документах не найдена."
