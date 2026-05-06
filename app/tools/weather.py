@@ -1,32 +1,30 @@
-import os
 from typing import Any
 
 import requests
-from dotenv import load_dotenv
 
-
-load_dotenv()
-
-OPENWEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
-REQUEST_TIMEOUT_SECONDS = 5
+from app.core.config import get_settings
 
 
 def get_weather(city: str) -> str:
     """Return current weather for a city using OpenWeather."""
-    api_key = os.getenv("OPENWEATHER_API_KEY")
+    settings = get_settings()
 
-    if not api_key:
+    if not settings.openweather_api_key:
         return "Ошибка: API ключ OpenWeather не настроен в .env файле."
 
     params = {
         "q": city,
-        "appid": api_key,
+        "appid": settings.openweather_api_key,
         "units": "metric",
         "lang": "ru",
     }
 
     try:
-        response = requests.get(OPENWEATHER_URL, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
+        response = requests.get(
+            settings.openweather_url,
+            params=params,
+            timeout=settings.openweather_timeout_seconds,
+        )
         data: dict[str, Any] = response.json()
 
         if response.status_code == 404:

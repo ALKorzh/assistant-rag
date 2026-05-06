@@ -1,9 +1,11 @@
+import os
+
 import requests
 import streamlit as st
 
 
-API_BASE_URL = "http://127.0.0.1:8000"
-REQUEST_TIMEOUT_SECONDS = 60
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+REQUEST_TIMEOUT_SECONDS = int(os.getenv("UI_REQUEST_TIMEOUT", "60"))
 
 
 st.set_page_config(page_title="Агентный помощник", page_icon="🤖")

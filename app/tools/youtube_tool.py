@@ -2,14 +2,16 @@ from typing import Any
 
 from youtubesearchpython import VideosSearch
 
+from app.core.config import get_settings
 
-YOUTUBE_RESULTS_LIMIT = 3
 
-
-def search_youtube_videos(query: str, limit: int = YOUTUBE_RESULTS_LIMIT) -> str:
+def search_youtube_videos(query: str, limit: int | None = None) -> str:
     """Search YouTube and return a compact list of relevant videos."""
+    settings = get_settings()
+    effective_limit = limit or settings.youtube_results_limit
+
     try:
-        search = VideosSearch(query, limit=limit)
+        search = VideosSearch(query, limit=effective_limit)
         results = search.result().get("result", [])
 
         if not results:
