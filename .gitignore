@@ -2,3 +2,7 @@
 /qdrant_data
 /.idea
 .env
+__pycache__/
+*.py[cod]
+*$py.class
+examples.json
