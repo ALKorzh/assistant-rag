@@ -1,3 +1,5 @@
+import logging
+
 from langgraph.graph import END, StateGraph
 
 from app.agent.nodes import (
@@ -13,11 +15,12 @@ from app.agent.nodes import (
 )
 from app.agent.state import AgentState
 
+logger = logging.getLogger(__name__)
+
 
 def build_graph():
     """Compile the LangGraph state machine that drives the assistant."""
-    print("=" * 50)
-    print("ЗАПУСК АГЕНТНОЙ СИСТЕМЫ...")
+    logger.info("Building agent graph")
 
     workflow = StateGraph(AgentState)
 
@@ -63,9 +66,7 @@ def build_graph():
     workflow.add_edge("generator", END)
 
     compiled = workflow.compile()
-
-    print("СИСТЕМА ГОТОВА")
-    print("=" * 50)
+    logger.info("Agent graph compiled successfully")
     return compiled
 
 

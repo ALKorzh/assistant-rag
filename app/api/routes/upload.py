@@ -1,3 +1,4 @@
+import logging
 import shutil
 from pathlib import Path
 
@@ -8,6 +9,7 @@ from app.core.config import get_settings
 from app.schemas.chat import UploadResponse
 from app.services.rag_service import RAGService
 
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["documents"])
 
@@ -24,9 +26,11 @@ async def upload_file(
 
     safe_filename = Path(file.filename or "uploaded_file").name
     target_path = upload_dir / safe_filename
+    logger.info("Uploading file '%s' to %s", safe_filename, target_path)
 
     with open(target_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     result = rag_service.process_file(str(target_path))
+    logger.info("Upload processing finished for '%s': %s", safe_filename, result)
     return UploadResponse(status=result)

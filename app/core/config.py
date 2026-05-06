@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import lru_cache
 
 from dotenv import load_dotenv
@@ -16,6 +16,7 @@ class Settings:
     api_description: str = "Personal assistant with routing, RAG, and external tools."
     api_host: str = "0.0.0.0"
     api_port: int = 8000
+    cors_allow_origins: tuple[str, ...] = field(default_factory=lambda: ("*",))
 
     gemini_model: str = "gemini-2.5-flash"
     gemini_router_temperature: float = 0.0
@@ -24,6 +25,7 @@ class Settings:
 
     qdrant_url: str = "http://localhost:6333"
     qdrant_collection: str = "my_documents"
+    ollama_base_url: str = "http://localhost:11434"
     ollama_embedding_model: str = "nomic-embed-text"
 
     chunk_size: int = 600
@@ -62,6 +64,13 @@ def _env_float(name: str, default: float) -> float:
         return default
 
 
+def _env_tuple(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
+    raw = os.getenv(name)
+    if not raw:
+        return default
+    return tuple(item.strip() for item in raw.split(",") if item.strip())
+
+
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     """Build settings once and reuse the same instance across the app."""
@@ -73,12 +82,14 @@ def get_settings() -> Settings:
         ),
         api_host=os.getenv("API_HOST", "0.0.0.0"),
         api_port=_env_int("API_PORT", 8000),
+        cors_allow_origins=_env_tuple("CORS_ALLOW_ORIGINS", ("*",)),
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
         gemini_router_temperature=_env_float("GEMINI_ROUTER_TEMPERATURE", 0.0),
         gemini_answer_temperature=_env_float("GEMINI_ANSWER_TEMPERATURE", 0.7),
         google_api_key=os.getenv("GOOGLE_API_KEY"),
         qdrant_url=os.getenv("QDRANT_URL", "http://localhost:6333"),
         qdrant_collection=os.getenv("QDRANT_COLLECTION", "my_documents"),
+        ollama_base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
         ollama_embedding_model=os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text"),
         chunk_size=_env_int("RAG_CHUNK_SIZE", 600),
         chunk_overlap=_env_int("RAG_CHUNK_OVERLAP", 100),

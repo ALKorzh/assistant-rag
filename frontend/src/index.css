@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+}
+
+@layer components {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(51 65 85) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgb(51 65 85);
+    border-radius: 9999px;
+  }
+
+  .markdown :where(p) {
+    @apply leading-relaxed;
+  }
+
+  .markdown :where(a) {
+    @apply text-brand-500 underline underline-offset-2;
+  }
+
+  .markdown :where(code) {
+    @apply rounded bg-slate-800 px-1.5 py-0.5 text-sm font-mono text-amber-200;
+  }
+
+  .markdown :where(pre) {
+    @apply rounded-xl bg-slate-900 p-4 overflow-x-auto text-sm;
+  }
+
+  .markdown :where(pre code) {
+    @apply bg-transparent p-0 text-slate-100;
+  }
+
+  .markdown :where(ul) {
+    @apply list-disc list-inside space-y-1;
+  }
+
+  .markdown :where(ol) {
+    @apply list-decimal list-inside space-y-1;
+  }
+
+  .markdown :where(h1, h2, h3) {
+    @apply font-semibold text-slate-50 mt-4 mb-2;
+  }
+
+  .markdown :where(blockquote) {
+    @apply border-l-2 border-slate-700 pl-3 text-slate-300 italic;
+  }
+}
