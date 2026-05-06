@@ -1,25 +1,32 @@
+import logging
 from typing import Any
 
 from youtubesearchpython import VideosSearch
 
 from app.core.config import get_settings
 
+logger = logging.getLogger(__name__)
+
 
 def search_youtube_videos(query: str, limit: int | None = None) -> str:
     """Search YouTube and return a compact list of relevant videos."""
     settings = get_settings()
     effective_limit = limit or settings.youtube_results_limit
+    logger.info("YouTube search started, query_length=%d limit=%d", len(query), effective_limit)
 
     try:
         search = VideosSearch(query, limit=effective_limit)
         results = search.result().get("result", [])
 
         if not results:
+            logger.info("YouTube search returned no results")
             return "Видео по вашему запросу не найдены."
 
+        logger.info("YouTube search completed, results=%d", len(results))
         return "\n\n".join(_format_video(video) for video in results)
-    except Exception as exc:
-        return f"Ошибка при поиске на YouTube: {exc}"
+    except Exception:
+        logger.exception("YouTube search failed")
+        return "Ошибка при поиске на YouTube."
 
 
 def _format_video(video: dict[str, Any]) -> str:
