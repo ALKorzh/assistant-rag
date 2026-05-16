@@ -18,6 +18,4 @@ node_modules
 streamlit_app.py
 README.md
 .dockerignore
-Dockerfile
-docker-compose.yml
 examples.json

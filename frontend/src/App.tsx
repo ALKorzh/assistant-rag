@@ -86,7 +86,7 @@ export default function App() {
           <div>
             <h1 className="text-lg font-semibold text-slate-50">Чат с ассистентом</h1>
             <p className="text-xs text-slate-400">
-              Gemini 2.5 Flash · LangGraph · Qdrant · DuckDuckGo · Wikipedia · YouTube
+              Gemini 3.1 Flash-Lite · LangGraph · Qdrant · DuckDuckGo · Wikipedia · YouTube
             </p>
           </div>
           <div className="hidden items-center gap-2 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-500 ring-1 ring-brand-500/30 md:inline-flex">

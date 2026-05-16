@@ -10,3 +10,7 @@ examples.json
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
+
+# Локальные отчёты QA / протокол (генерация: scripts/run_detailed_api_report.ps1 и т.п.)
+SUPERVISOR_DETAILED_API_REPORT.md
+DOCKER_QA_REPORT.md

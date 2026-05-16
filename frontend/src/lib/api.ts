@@ -1,5 +1,14 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "/api").replace(/\/$/, "");
 
+function authHeaders(extra?: Record<string, string>): Record<string, string> {
+  const key = import.meta.env.VITE_API_KEY as string | undefined;
+  const base = { ...extra };
+  if (key) {
+    base["X-API-Key"] = key;
+  }
+  return base;
+}
+
 interface ChatResponse {
   answer: string;
 }
@@ -20,7 +29,7 @@ async function jsonFetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> 
 export async function sendChatMessage(text: string, signal?: AbortSignal): Promise<string> {
   const data = await jsonFetch<ChatResponse>(`${API_BASE}/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ text }),
     signal,
   });
@@ -33,6 +42,7 @@ export async function uploadDocument(file: File, signal?: AbortSignal): Promise<
 
   const data = await jsonFetch<UploadResponse>(`${API_BASE}/upload`, {
     method: "POST",
+    headers: authHeaders(),
     body: formData,
     signal,
   });

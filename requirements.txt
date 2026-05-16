@@ -98,5 +98,7 @@ zstandard==0.25.0
 langchain-google-genai
 pymorphy3
 pymorphy3-dicts-ru
-wikipedia
 youtube-search-python
+Pillow==12.0.0
+pytesseract==0.3.13
+pytest==8.4.2
