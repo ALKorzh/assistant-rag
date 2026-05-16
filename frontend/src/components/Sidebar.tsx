@@ -66,12 +66,12 @@ export function Sidebar({ online, onClearChat }: Props) {
           className="flex w-full items-center gap-2 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 px-3 py-3 text-sm text-slate-200 transition hover:border-brand-500 hover:bg-brand-500/5"
         >
           <FileUp size={16} className="text-brand-500" />
-          Загрузить PDF / TXT
+          Загрузить в базу знаний
         </button>
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,.txt"
+          accept=".pdf,.txt,.md,.png,.jpg,.jpeg,.webp"
           className="hidden"
           onChange={handleFileChange}
         />
@@ -106,7 +106,9 @@ export function Sidebar({ online, onClearChat }: Props) {
           Очистить диалог
         </button>
         <p className="text-[11px] leading-relaxed text-slate-500">
-          Маршрутизатор, RAG, погода, Wikipedia, YouTube и веб-поиск. Все ответы синтезируются Gemini 2.5 Flash.
+          PDF, текст (TXT/MD), изображения с текстом (PNG/JPG/WebP) идут в Qdrant. Спрашивайте «что в моём файле?» —
+          ответ пойдёт из ваших документов. Также: погода, Wikipedia, YouTube, веб, калькулятор. Ответы — Gemini 2.5
+          Flash.
         </p>
       </div>
     </aside>

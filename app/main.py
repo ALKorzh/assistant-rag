@@ -2,9 +2,12 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 from app.api.routes import api_router
 from app.core.config import get_settings
+from app.middleware.request_id import RequestIDMiddleware
+from app.services.readiness import check_readiness
 
 LOG_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 
@@ -33,13 +36,21 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["X-Request-ID"],
     )
+    application.add_middleware(RequestIDMiddleware)
     logger.info("CORS configured for %d origin entries", len(settings.cors_allow_origins))
 
     @application.get("/health", tags=["system"])
     async def health() -> dict[str, str]:
         logger.debug("Health check requested")
         return {"status": "ok"}
+
+    @application.get("/ready", tags=["system"])
+    async def ready() -> JSONResponse:
+        payload = check_readiness()
+        status_code = 200 if payload["ready"] else 503
+        return JSONResponse(payload, status_code=status_code)
 
     application.include_router(api_router)
     logger.info("API routers registered")

@@ -2,7 +2,7 @@
 
 Личный ИИ-ассистент с агентным маршрутизатором, RAG-поиском по локальным
 документам и набором внешних инструментов (погода, Wikipedia, YouTube,
-веб-поиск). Все языковые вызовы идут через Gemini 2.5 Flash.
+веб-поиск). Все языковые вызовы идут через Gemini (по умолчанию Gemini 3.1 Flash‑Lite).
 
 ## Архитектура
 
@@ -26,7 +26,7 @@
   `app/tools`, `app/core/config.py` и `app/schemas`.
 - **Qdrant** — векторное хранилище для RAG.
 - **Ollama** — локальные эмбеддинги (`nomic-embed-text`).
-- **Gemini 2.5 Flash** — генерация и маршрутизация (через `langchain_google_genai`).
+- **Gemini** (дефолт `gemini-3.1-flash-lite`) — генерация и маршрутизация (через `langchain_google_genai`).
 
 ## Структура репозитория
 
@@ -101,7 +101,7 @@ Vite поднимается на <http://localhost:5173> и проксирует
 | --- | --- | --- |
 | `GOOGLE_API_KEY` | Ключ Google AI Studio для Gemini | — |
 | `OPENWEATHER_API_KEY` | Ключ OpenWeather (инструмент погоды) | — |
-| `GEMINI_MODEL` | Имя модели Gemini | `gemini-2.5-flash` |
+| `GEMINI_MODEL` | Имя модели Gemini | `gemini-3.1-flash-lite` |
 | `QDRANT_URL` | URL Qdrant | `http://qdrant:6333` |
 | `OLLAMA_BASE_URL` | URL Ollama | `http://ollama:11434` |
 | `OLLAMA_EMBEDDING_MODEL` | Модель эмбеддингов | `nomic-embed-text` |
@@ -125,3 +125,13 @@ curl -X POST http://localhost:8000/chat \
      -H "Content-Type: application/json" \
      -d '{"text":"Привет!"}'
 ```
+
+## Скрипт детализированного протокола API
+
+При запущенном стеке (`docker compose up`) можно снять полный журнал HTTP-запросов/ответов:
+
+```powershell
+.\scripts\run_detailed_api_report.ps1
+```
+
+Результат пишется в `SUPERVISOR_DETAILED_API_REPORT.md` в корне проекта; путь указан в `.gitignore`, файл не предназначен для коммита.
