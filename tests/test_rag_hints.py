@@ -9,7 +9,7 @@ from app.services.rag_service import document_matches_hints, hints_from_question
 
 @pytest.fixture(scope="session")
 def rag_fixture_text() -> str:
-    p = Path(__file__).resolve().parent.parent / "data" / "e2e_chat" / "rag.json"
+    p = Path(__file__).resolve().parent / "fixtures" / "e2e_chat" / "rag.json"
     return json.loads(p.read_text(encoding="utf-8"))["text"]
 
 
